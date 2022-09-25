@@ -19,7 +19,9 @@ namespace ul {
 template <class T, typename = std::enable_if_t<std::is_invocable_v<decltype(std::size<T>), T>>>
 int operator~(const T& v)
 {
-    return (int)std::size(v);
+    auto s = std::size(v);
+    assert(s <= INT_MAX);
+    return int(s);
 }
 
 }  // namespace ul

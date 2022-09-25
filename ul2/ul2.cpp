@@ -3,7 +3,4 @@
 #include "hash.h"
 
 namespace {
-void unused_dummy_function()
-{
-}
 }  // namespace

@@ -10,7 +10,7 @@ include_guard(GLOBAL)
 
 option(WARNINGS_AS_ERRORS "Targets using PROJECT_WARNING_FLAGS will treat warnings as errors." OFF)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   option(CLANG_ENABLE_ALL_WARNINGS "PROJECT_WARNING_FLAGS will add all warnings (except C++98 compatibility ones) when using Clang" OFF)
 endif ()
 
@@ -31,7 +31,7 @@ if (CLANG_ENABLE_ALL_WARNINGS)
     -Wno-c++98-compat                  # This project is not compatible with C++98.
     -Wno-c++98-compat-pedantic         # This project is not compatible with C++98.
     )
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # Warnings present on all supported versions of GCC and Clang.
   list(APPEND PROJECT_WARNING_FLAGS
     -Wall                # Enables most warnings.
@@ -44,11 +44,14 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "
     -Wnon-virtual-dtor   # Non-virtual destructors are found.
     -Wold-style-cast     # C-style cast is used in a program.
     -Woverloaded-virtual # Overloaded virtual function names.
-    -Wsign-conversion    # Implicit conversions between signed and unsigned integers.
+    #-Wsign-conversion    # Implicit conversions between signed and unsigned integers.
+    -Wno-sign-conversion    # Implicit conversions between signed and unsigned integers.
     -Wshadow             # One variable shadows another.
     -Wswitch-enum        # A switch statement has an index of enumerated type and lacks a case.
     -Wundef              # An undefined identifier is evaluated in an #if directive.
     -Wunused             # Enable all -Wunused- warnings.
+    -Wno-implicit-float-conversion
+    #-Wno-shorten-64-to-32
     )
   # Enable additional warnings depending on the compiler and compiler version in use.
   if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -62,7 +65,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "
       )
     if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6)
       list(APPEND PROJECT_WARNING_FLAGS
-        -Wdouble-promotion          # Warn about implicit conversions from "float" to "double".
+        # -Wdouble-promotion          # Warn about implicit conversions from "float" to "double".
         )
     endif ()
     if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
@@ -104,9 +107,9 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "
         -Wredundant-tags            # Redundant class-key and enum-key where it can be eliminated.
         )
     endif ()
-  elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     list(APPEND PROJECT_WARNING_FLAGS
-      -Wdouble-promotion            # Warn about implicit conversions from "float" to "double".
+      # -Wdouble-promotion            # Warn about implicit conversions from "float" to "double".
       -Wnull-dereference            # Dereferencing a pointer may lead to erroneous or undefined behavior.
       -Wno-unknown-warning-option   # Ignore unknown warning options.
       )
@@ -140,7 +143,7 @@ endif ()
 
 # Enable warnings as errors.
 if (WARNINGS_AS_ERRORS)
-  if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     list(APPEND PROJECT_WARNING_FLAGS -Werror)
   elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     list(APPEND PROJECT_WARNING_FLAGS /WX)
