@@ -35,3 +35,18 @@ void hash_range(std::size_t& seed, It first, It last)
 }
 
 }  // namespace ul
+
+namespace std {
+
+template <class A, class B>
+struct std::hash<std::pair<A, B>>
+{
+    std::size_t operator()(std::pair<A, B> const& s) const noexcept
+    {
+        auto h = ::ul::hash_value(s.first);
+        ::ul::hash_combine(h, s.second);
+        return h;
+    }
+};
+
+}  // namespace std
